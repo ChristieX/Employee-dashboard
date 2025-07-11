@@ -31,17 +31,21 @@ $(document).ready(function () {
         });
     })
 
-    $(document).on("click", ".edit_btn", function () {
-        var employeeId = $(this).data("id");
-        $.ajax({
-            url: "./server/edit-employee-form.php",
-            type: 'POST',
-            data: { id: employeeId },
-            success: function (data) {
-                $('.modal-body').html(data);
-            }
-        });
+$(document).on("click", ".edit_btn", function () {
+    var employeeId = $(this).data("id");
+
+    $('.modal-body').html(''); 
+
+    $.ajax({
+        url: "./server/edit-employee-form.php",
+        type: 'POST',
+        data: { id: employeeId },
+        success: function (data) {
+            $('.modal-body').html(data);
+        }
     });
+});
+
 
     $(document).on("click", "#update-employee", function (e) {
         e.preventDefault();
@@ -52,6 +56,15 @@ $(document).ready(function () {
         var phone = $("#phone").val();
         var dob = $("#dob").val();
         var gender = $("#gender").val();
+        var skills = [];
+        $(".skill-row").each(function () {
+            var id = $(this).find(".skill-id").val();
+            var skill = $(this).find(".skill").val();
+            var level = $(this).find(".level").val();
+            if (skill && level) {
+                skills.push({ id: id || null, skill: skill, level: level });
+            }
+        });
         $.ajax({
             url: "./server/save-edit.php",
             type: 'POST',
@@ -63,17 +76,31 @@ $(document).ready(function () {
                 phone: phone,
                 dob: dob,
                 gender: gender,
+                skills: JSON.stringify(skills)
             },
             success: function (response) {
 
                 if (response == 1) {
-                    // alert("Employee updated successfully.");
+                $(this).find('.modal-body').html('');
                     loadEmployeeData();
-                    $('#exampleModal').modal('hide');
                 } else {
                     alert("Error updating employee.");
                 }
             }
         });
+    });
+
+    $("#live-search").on("keydown", function () {
+        var input = $(this).val().toLowerCase();
+        if(input!=""){
+            $.ajax({
+                url: "./server/load-employee.php",
+                type: 'POST',
+                data: input !== "" ? { search: input } : {},
+                success: function (data) {
+                    $('.employee-data').html(data);
+                }
+            });
+        }
     });
 });
