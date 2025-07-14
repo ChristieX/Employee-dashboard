@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 $new_emp_id = $stmt->insert_id;
 
-                // Insert skills
                 if (!empty($_POST['skills']) && !empty($_POST['proficiency_levels'])) {
                     $skills = $_POST['skills'];
                     $proficiency_levels = $_POST['proficiency_levels'];
@@ -122,9 +121,7 @@ exit();
         </div>
 
         <label for="skill" class="form-label">Skills:</label>
-        <!-- Skills Wrapper -->
 <div id="skills-wrapper">
-    <!-- This is your initial row -->
     <div class="row mb-3 skill-row">
         <div class="col-md-5">
             <input type="text" name="skills[]" class="form-control" placeholder="Skill name" required>

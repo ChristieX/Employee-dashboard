@@ -2,7 +2,6 @@
 include('../common/common_files.php');
 include('../common/connect_db.php');
 
-// JavaScript file for adding/removing skill rows
 echo '<script src="./client/js/add-skills.js"></script>';
 
 function renderSkillRow($skill = '', $level = '', $skill_id = '') {
@@ -106,7 +105,6 @@ if (mysqli_num_rows($result) > 0) {
     $output .= '
   </div>
 
-  <!-- Hidden template for new skill rows -->
   <div id="skill-template" class="d-none">' . renderSkillRow() . '</div>
 
   <button type="button" id="addSkillBtn" class="btn btn-secondary mb-3">+ Add Another Skill</button>

@@ -13,7 +13,6 @@ $skills = isset($_POST['skills']) ? json_decode($_POST['skills'], true) : [];
 
 $success = true;
 
-// 1. Update employee info
 $sql = "UPDATE employees 
         SET first_name = '{$first_name}', 
             last_name = '{$last_name}', 
@@ -26,14 +25,12 @@ if (!mysqli_query($conn, $sql)) {
     $success = false;
 }
 
-// 2. Fetch current skill IDs (updated to fetch skill_id)
 $currentSkillIds = [];
 $res = mysqli_query($conn, "SELECT id FROM skills WHERE emp_id = {$emp_id}");
 while ($row = mysqli_fetch_assoc($res)) {
     $currentSkillIds[] = $row['id'];
 }
 
-// 3. Track submitted skill IDs
 $submittedIds = [];
 
 foreach ($skills as $s) {
@@ -42,7 +39,6 @@ foreach ($skills as $s) {
     $level = mysqli_real_escape_string($conn, $s['level']);
 
     if ($skill_id) {
-        // Update existing skill
         $submittedIds[] = $skill_id;
         $updateQuery = "UPDATE skills 
                         SET skill = '$skill', proficiency_level = '$level' 
@@ -51,7 +47,7 @@ foreach ($skills as $s) {
             $success = false;
         }
     } else {
-        // Insert new skill
+
         $insertQuery = "INSERT INTO skills (emp_id, skill, proficiency_level) 
                         VALUES ($emp_id, '$skill', '$level')";
         if (!mysqli_query($conn, $insertQuery)) {
@@ -60,7 +56,6 @@ foreach ($skills as $s) {
     }
 }
 
-// 4. Delete removed skills
 $toDelete = array_diff($currentSkillIds, $submittedIds);
 if (!empty($toDelete)) {
     $ids = implode(",", array_map('intval', $toDelete));
